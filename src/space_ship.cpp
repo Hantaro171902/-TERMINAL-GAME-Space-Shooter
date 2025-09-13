@@ -18,13 +18,13 @@ using namespace std;
 
 SpaceShip::SpaceShip(int _x, int _y) : x(_x), y(_y), hp(3), energy(5), imDead(false) {
     // Constructor logic (if needed)
-    srand(time(nullptr));
+    // srand(time(nullptr));
 
 }
 
 SpaceShip::~SpaceShip() {
     // Destructor logic (if needed)
-    restoreTerminalBlocking();
+    // restoreTerminalBlocking();
 }
 
 int SpaceShip::getX() { return x; }
@@ -95,8 +95,8 @@ void SpaceShip::Damage() { // The spaceship is damaged
       printf("  *  ");
       move_cursor(x, y + 2);
       printf("*****");
-      sleep(100);
-    } 
+      usleep(10000);
+    }
 }
 
 void SpaceShip::Explosion() { // When you lose a heart :c
@@ -124,7 +124,7 @@ void SpaceShip::Explosion() { // When you lose a heart :c
     cout << (" * * ");
     move_cursor(x, y + 2);
     cout << ("* * *");
-    sleep(100);
+    usleep(10000);
     if (hp > 0) { // If you still have a heart or more
       energy = 5;
     } else { // If you don't
@@ -137,20 +137,23 @@ void SpaceShip::Move() { // The main function of the spaceship
       Erase(); // Look I'm invisible
       InputKey key = getInputKey();  // What did you type?
       switch (key) { // Checks if the spaceship won't leave the game boundaries
-      case InputKey::LEFT:
-        if (x > 2) x -= 1;
+        case 'A': case 'a': case InputKey::LEFT: // Left arrow or 'A' key
+          if (x > 2) x -= 1;
+          break;
+        case InputKey::RIGHT:
+          if (x + 4 < 77) x += 1;
+          break;
+        case InputKey::UP:
+          if (y > 3) y -= 1;
+          break;
+        case InputKey::DOWN:
+          if (y + 2 < 22) y += 1;
         break;
-      case InputKey::RIGHT:
-        if (x + 4 < 77) x += 1;
-        break;
-      case InputKey::UP:
-        if (y > 3) y -= 1;
-        break;
-      case InputKey::DOWN:
-        if (y + 2 < 22) y += 1;
-        break;
+        default:
+            break;
       }
     }
+    // usleep(10000);
     Draw(); // The spaceship is drawn regardless if you moved it or not, if you did then it will appear in it's new position.
 }
 

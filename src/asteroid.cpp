@@ -11,6 +11,10 @@ Asteroid::Asteroid(int _x, int _y) : x(_x), y(_y) {
     srand(time(nullptr));
 }
 
+Asteroid::~Asteroid() {
+    // Destructor logic (if needed)
+}
+
 int Asteroid::getX() { return x; }
 int Asteroid::getY() { return y; }
 

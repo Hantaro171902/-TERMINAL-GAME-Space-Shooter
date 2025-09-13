@@ -73,8 +73,11 @@ void Game::run() { // The main function of the game
                 int bulY = (*bullet_it)->getY();
 
                 if ((astX == bulX) && ((astY == bulY) || (astY + 1 == bulY))) {
-                    move_cursor(bulX, bulY); printf(" ");
-                    move_cursor(astX, astY); printf("X"); printf(" ");
+                    move_cursor(bulX, bulY); 
+                    cout << " ";
+                    move_cursor(astX, astY); 
+                    cout << "X"; 
+                    cout << " ";
                     // remove bullet and asteroid
                     delete *bullet_it;
                     bullet_it = Bullets.erase(bullet_it);
@@ -95,7 +98,7 @@ void Game::run() { // The main function of the game
 
         ss.Move();
         move_cursor(56, 1);
-        printf("%d", score);
+        cout << score;
 
         // sleep 30 milliseconds
         this_thread::sleep_for(chrono::milliseconds(30));
@@ -120,18 +123,23 @@ Game::~Game() {
 void Game::WelcomeMessage() { // Displays a welcome message
     DrawFrame(20, 8, 60, 16);
     move_cursor(30, 10);
+
+    this_thread::sleep_for(chrono::milliseconds(100));
+
     cout << "WELCOME TO THE GAME!";
     move_cursor(22, 12);
     cout << "Press ENTER to start or ESC to exit.";
     move_cursor(1, 24);
     cout << flush;
-    InputKey key;
-    do {
-        key = getInputKey();
-        this_thread::sleep_for(chrono::milliseconds(100));
-    } while (key != InputKey::ENTER && key != InputKey::ESC);
-    if (key == InputKey::ESC) {
-        exit(0);
+    InputKey key = getInputKey();
+
+    switch (key) {
+        case InputKey::ENTER:
+            break;
+        case InputKey::ESC:
+            exit(0);
+        default:
+            break;
     }
     DrawWhiteSpace(20, 8, 60, 16); // Clear the welcome message
 }
