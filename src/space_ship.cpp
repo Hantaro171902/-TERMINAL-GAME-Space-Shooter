@@ -12,11 +12,11 @@
 #include "space_ship.hpp"
 #include "cursor_input.hpp"
 #include "color.hpp"
-#include "ultils.hpp"
+#include "utils.hpp"
 
 using namespace std;
 
-SpaceShip::SpaceShip(int _x, int _y) : x(_x), y(_y), hp(3), energy(5), isDead(false) {
+SpaceShip::SpaceShip(int _x, int _y) : x(_x), y(_y), hp(3), energy(5), imDead(false) {
     // Constructor logic (if needed)
     srand(time(nullptr));
 
@@ -33,72 +33,88 @@ int SpaceShip::getHP() { return hp; }
 
 bool SpaceShip::isDead() { 
     DrawSpaceShipInfo(); // It's annoying to die and still see a heart on the screen
-    return isDead; 
+    return imDead; 
 }
 
 void SpaceShip::DrawSpaceShipInfo() { // Displays HP and energy points, I aligned them with the labels printed in DrawGameLimits
     move_cursor(5, 1);
-    printf("     ");
+    cout << "     ";
     for (int i = 0; i < hp; i++) {
       move_cursor(5 + i, 1);
-      printf("%c", 3);
+      cout << ("%c", 3);
     }
     move_cursor(23, 1);
-    printf("     ");
+    cout << "     ";
     for (int i = 0; i < energy; i++) {
       move_cursor(23 + i, 1);
-      printf("%c", 222);
+      cout << ("%c", 222);
     }
 }
 
 void SpaceShip::Draw() { // This is our spaceship
     move_cursor(x, y);
-    printf("  %c  ", 30);
+    cout << ("  %c  ", 30);
     move_cursor(x, y + 1);
-    printf("  %c  ", 4);
+    cout << ("  %c  ", 4);
     move_cursor(x, y + 2);
-    printf("%c%c%c%c%c", 17, 30, 223, 30, 16);
+    cout << ("%c%c%c%c%c", 17, 30, 223, 30, 16);
 }
 
 void SpaceShip::Erase() { // This was or spaceship
     move_cursor(x, y);
-    printf("     ");
+    cout << ("     ");
     move_cursor(x, y + 1);
-    printf("     ");
+    cout << ("     ");
     move_cursor(x, y + 2);
-    printf("     ");
+    cout << ("     ");
+}
+
+void SpaceShip::Damage() { // The spaceship is damaged
+    energy--;
+    if (energy == 0) {
+      Explosion();
+    } else {
+      Erase(); // You can omit this part, is meant to visually tell you that you were hit
+      move_cursor(x, y);
+      printf("  *  ");
+      move_cursor(x, y + 1);
+      printf("  *  ");
+      move_cursor(x, y + 2);
+      printf("*****");
+      sleep(100);
+    } 
 }
 
 void SpaceShip::Explosion() { // When you lose a heart :c
     hp--;
     Erase();
     move_cursor(x, y);
-    printf("  *  ");
+    cout << ("  *  ");
     move_cursor(x, y + 1);
-    printf("  *  ");
+    cout << ("  *  ");
     move_cursor(x, y + 2);
-    printf("*****");
-    Sleep(100);
+    cout << ("*****");
+    sleep(100);
     Erase();
     move_cursor(x, y);
-    printf(" * * ");
+    cout << (" * * ");
     move_cursor(x, y + 1);
-    printf("* * *");
+    cout << ("* * *");
     move_cursor(x, y + 2);
-    printf(" * * ");
-    Sleep(100);
+    cout << (" * * ");
+    sleep(100);
     Erase();
     move_cursor(x, y);
-    printf("*   *");
+    cout << ("*   *");
     move_cursor(x, y + 1);
-    printf(" * * ");
+    cout << (" * * ");
     move_cursor(x, y + 2);
-    printf("* * *");
-    Sleep(100);
+    cout << ("* * *");
+    sleep(100);
     if (hp > 0) { // If you still have a heart or more
       energy = 5;
     } else { // If you don't
-      isDead = true;
+      imDead = true;
     }
 }
 
@@ -107,16 +123,16 @@ void SpaceShip::Move() { // The main function of the spaceship
       Erase(); // Look I'm invisible
       InputKey key; // What did you type?
       switch (key) { // Checks if the spaceship won't leave the game boundaries
-      case LEFT:
+      case InputKey::LEFT:
         if (x > 2) x -= 1;
         break;
-      case RIGHT:
+      case InputKey::RIGHT:
         if (x + 4 < 77) x += 1;
         break;
-      case UP:
+      case InputKey::UP:
         if (y > 3) y -= 1;
         break;
-      case DOWN:
+      case InputKey::DOWN:
         if (y + 2 < 22) y += 1;
         break;
       }

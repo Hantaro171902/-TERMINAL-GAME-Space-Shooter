@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 #include "cursor_input.hpp"
+#include "color.hpp"
+#include "utils.hpp"
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -12,10 +14,10 @@ private:
     int x;
     int y;
 public:
-    int X();
-    int Y();    
+    int getX();
+    int getY();
     Asteroid(int _x, int _y);
     void Draw();
     void Collision(class SpaceShip & ss); // The asteroid finds the spaceship
 
-}
+};
