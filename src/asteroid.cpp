@@ -2,6 +2,7 @@
 #include "space_ship.hpp"
 #include <iostream>
 #include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -14,7 +15,8 @@ int Asteroid::getX() { return x; }
 int Asteroid::getY() { return y; }
 
 void Asteroid::Collision(SpaceShip & ss) {// The asteroid finds the spaceship
-    if (((x >= ss.getX()) && (x <= ss.getX() + 5)) && ((y >= ss.getY()) && (y <= ss.getY() + 2))) { // Depending on the shape of the spaceship you have to tinker when the asteroid really hits you
+    if (((x >= ss.getX()) && (x <= ss.getX() + 5)) && 
+        ((y >= ss.getY()) && (y <= ss.getY() + 2))) { // Depending on the shape of the spaceship you have to tinker when the asteroid really hits you
       ss.Damage(); // The asteroid hurts
       move_cursor(x, y);
       cout << " "; // And the asteroid is "destroyed"

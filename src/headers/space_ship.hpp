@@ -2,6 +2,11 @@
 
 #include <vector>
 #include <string>
+#include "cursor_input.hpp"
+
+#include "color.hpp"
+#include "utils.hpp"
+#include <iostream>
 
 class SpaceShip {
 private:

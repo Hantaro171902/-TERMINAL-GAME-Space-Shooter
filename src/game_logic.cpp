@@ -1,8 +1,4 @@
 #include "game_logic.hpp"
-#include "space_ship.hpp"
-#include "cursor_input.hpp"
-#include "bullet.hpp"
-#include "asteroid.hpp"
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
@@ -27,11 +23,11 @@ void Game::run() { // The main function of the game
     DrawGameLimits();
 
     // Use plural names to match the rest of the file
-    std::list<Bullet*> Bullets;             // dynamic list for bullets
-    std::list<Bullet*>::iterator bullet_it; // iterator for bullets
+    list<Bullet*> Bullets;             // dynamic list for bullets
+    list<Bullet*>::iterator bullet_it; // iterator for bullets
 
-    std::list<Asteroid*> Asteroids;             // list for asteroids
-    std::list<Asteroid*>::iterator asteroid_it; // iterator for asteroids
+    list<Asteroid*> Asteroids;             // list for asteroids
+    list<Asteroid*>::iterator asteroid_it; // iterator for asteroids
 
     // initialize asteroids
     for (int i = 0; i < 10; i++) {
@@ -41,7 +37,7 @@ void Game::run() { // The main function of the game
     SpaceShip ss = SpaceShip(40, 20);
     int score = 0;
 
-    using namespace std::chrono_literals;
+    using namespace chrono_literals;
 
     while (!ss.isDead() && score != 100) {
         if (kbhit()) {
@@ -102,7 +98,7 @@ void Game::run() { // The main function of the game
         printf("%d", score);
 
         // sleep 30 milliseconds
-        std::this_thread::sleep_for(std::chrono::milliseconds(30));
+        this_thread::sleep_for(chrono::milliseconds(30));
     }
 
     sleep(5000);
@@ -122,7 +118,7 @@ Game::~Game() {
 }
 
 void Game::WelcomeMessage() { // Displays a welcome message
-    DrawWindowFrame(20, 8, 60, 16);
+    DrawFrame(20, 8, 60, 16);
     move_cursor(30, 10);
     cout << "WELCOME TO THE GAME!";
     move_cursor(22, 12);
@@ -150,32 +146,43 @@ void Game::DrawWhiteSpace(int ax, int ay, int bx, int by) { // To clean a certai
     }
 }
 
-void Game::DrawWindowFrame(int ax, int ay, int bx, int by) { // This will draw a rectangular frame defined by two points
+void Game::DrawFrame(int ax, int ay, int bx, int by) { // draw rectangular frame defined by two points
+    // clear inner area first (keeps behavior identical to original)
     DrawWhiteSpace(ax, ay, bx, by);
-    for (int i = ax; i < bx; i++) {
-        move_cursor(i, ay);
-        cout << (char)205;
-        move_cursor(i, by);
-        cout << (char)205;
-    }
-    for (int i = ay; i < by; i++) {
-        move_cursor(ax, i);
-        cout << (char)186;
-        move_cursor(bx, i);
-        cout << (char)186;
-    }
+
+    // top row: left corner, horizontals, right corner
     move_cursor(ax, ay);
-    cout << (char)201;
+    cout << SYMBOL_DOUBLE_TOP_LEFT;
+    for (int i = ax + 1; i < bx; ++i) {
+        move_cursor(i, ay);
+        cout << SYMBOL_DOUBLE_HORIZONTAL;
+    }
     move_cursor(bx, ay);
-    cout << (char)187;
+    cout << SYMBOL_DOUBLE_TOP_RIGHT;
+
+    // middle rows: vertical bars
+    for (int j = ay + 1; j < by; ++j) {
+        move_cursor(ax, j);
+        cout << SYMBOL_DOUBLE_VERTICAL;
+        move_cursor(bx, j);
+        cout << SYMBOL_DOUBLE_VERTICAL;
+    }
+
+    // bottom row: left corner, horizontals, right corner
     move_cursor(ax, by);
-    cout << (char)200;
+    cout << SYMBOL_DOUBLE_BOTTOM_LEFT;
+    for (int i = ax + 1; i < bx; ++i) {
+        move_cursor(i, by);
+        cout << SYMBOL_DOUBLE_HORIZONTAL;
+    }
     move_cursor(bx, by);
-    cout << (char)188;
+    cout << SYMBOL_DOUBLE_BOTTOM_RIGHT;
+
+    cout << flush;
 }
 
 void Game::DrawGameLimits() { // Draws the limits of the game area and the labels for HP and energy
-    DrawWindowFrame(1, 2, 79, 23); // The game area
+    DrawFrame(1, 2, 79, 23); // The game area
     move_cursor(2, 1);
     cout << "HP: "; // Label for HP
     move_cursor(16, 1);
@@ -189,7 +196,7 @@ void Game::GameOverVictoryMessage() { // Displays a victory message
     int a_y = 8;
     int b_x = 55;
     int b_y = 16;
-    DrawWindowFrame(a_x, a_y, b_x, b_y);
+    DrawFrame(a_x, a_y, b_x, b_y);
     move_cursor(a_x + 1, a_y + 2);
     cout << "      VICTORY!!!";
     // move_cursor(a_x + 1, a_y + 4);

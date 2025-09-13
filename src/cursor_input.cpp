@@ -57,6 +57,7 @@ InputKey getInputKey() {
                 case 27:   key = InputKey::ESC; break; // Escape
                 case 'q': case 'Q': key = InputKey::Q; break;
                 case 'r': case 'R': key = InputKey::R; break;
+                case ' ': key = InputKey::SPACE; break; // Space key
                 case '[': key = InputKey::LEFT_BRACKET; break;
                 case ']': key = InputKey::RIGHT_BRACKET; break;
                 default: key = InputKey::NONE; break;

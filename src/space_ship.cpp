@@ -39,25 +39,39 @@ bool SpaceShip::isDead() {
 void SpaceShip::DrawSpaceShipInfo() { // Displays HP and energy points, I aligned them with the labels printed in DrawGameLimits
     move_cursor(5, 1);
     cout << "     ";
+
+    // Draw hearts 
+    setTextColor(RED);
     for (int i = 0; i < hp; i++) {
       move_cursor(5 + i, 1);
-      cout << ("%c", 3);
+      cout << HEART_SOLID;
     }
+    resetTextColor();
+
+    // Draw energy points
     move_cursor(23, 1);
     cout << "     ";
+    setTextColor(GREEN);
     for (int i = 0; i < energy; i++) {
       move_cursor(23 + i, 1);
-      cout << ("%c", 222);
+      cout << BLOCK_FULL << " ";
     }
+    resetTextColor();
 }
 
 void SpaceShip::Draw() { // This is our spaceship
+    // clearScreen();
+     // Row 0:   "  ▲  "
     move_cursor(x, y);
-    cout << ("  %c  ", 30);
+    cout << "  " << TRIANGLE_UP << "  ";
+
+    // Row 1:   " ◀ █ ▶ "
     move_cursor(x, y + 1);
-    cout << ("  %c  ", 4);
+    cout  << " " << TRIANGLE_LEFT << BLOCK_FULL << TRIANGLE_RIGHT << " ";
+
+    // Row 2:   "◀ ▴ ▷" (stylized base)
     move_cursor(x, y + 2);
-    cout << ("%c%c%c%c%c", 17, 30, 223, 30, 16);
+    cout << TRIANGLE_LEFT << " " << TRIANGLE_UP << " " << TRIANGLE_RIGHT;
 }
 
 void SpaceShip::Erase() { // This was or spaceship
@@ -121,7 +135,7 @@ void SpaceShip::Explosion() { // When you lose a heart :c
 void SpaceShip::Move() { // The main function of the spaceship
     if (kbhit()) { // If you move the spaceship
       Erase(); // Look I'm invisible
-      InputKey key; // What did you type?
+      InputKey key = getInputKey();  // What did you type?
       switch (key) { // Checks if the spaceship won't leave the game boundaries
       case InputKey::LEFT:
         if (x > 2) x -= 1;

@@ -53,6 +53,19 @@ extern const char BLOCK_FULL[];
 extern const char BLOCK_HALF[];
 extern const char BLOCK_RECT[];
 
+extern const char* ARROW_UP;
+extern const char* ARROW_DOWN;
+extern const char* ARROW_LEFT;
+extern const char* ARROW_RIGHT;
+
+extern const char* HEART_SOLID;
+extern const char* HEART_EMPTY;
+
+extern const char* TRIANGLE_UP;
+extern const char* TRIANGLE_DOWN;
+extern const char* TRIANGLE_LEFT;
+extern const char* TRIANGLE_RIGHT;
+
 extern const char* BALL_SOLID;
 extern const char* BALL_HOLLOW;
 extern const char* BALL_BULLSEYE;
