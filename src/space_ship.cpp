@@ -19,7 +19,6 @@ using namespace std;
 SpaceShip::SpaceShip(int _x, int _y) : x(_x), y(_y), hp(3), energy(5), imDead(false) {
     // Constructor logic (if needed)
     // srand(time(nullptr));
-
 }
 
 SpaceShip::~SpaceShip() {
@@ -37,41 +36,52 @@ bool SpaceShip::isDead() {
 }
 
 void SpaceShip::DrawSpaceShipInfo() { // Displays HP and energy points, I aligned them with the labels printed in DrawGameLimits
+      // Clear hearts area
     move_cursor(5, 1);
-    cout << "     ";
+    cout << "     ";            // 5 cols cleared for hearts
 
-    // Draw hearts 
+    // Draw hearts
     setTextColor(RED);
-    for (int i = 0; i < hp; i++) {
-      move_cursor(5 + i, 1);
-      cout << HEART_SOLID;
+    for (int i = 0; i < hp; ++i) {
+        move_cursor(5 + i, 1);
+        cout << HEART_SOLID;
     }
     resetTextColor();
 
-    // Draw energy points
+    // Clear energy area (reserve space for up to 5 blocks spaced by 2 => ~11 cols)
     move_cursor(23, 1);
-    cout << "     ";
+    cout << "           ";     // 11 spaces
+
+    // Draw energy blocks with 2-column spacing (so wide glyphs won't collide)
     setTextColor(GREEN);
-    for (int i = 0; i < energy; i++) {
-      move_cursor(23 + i, 1);
-      cout << BLOCK_FULL << " ";
+    for (int i = 0; i < energy; ++i) {
+        move_cursor(23 + i * 2, 1); // step by 2
+        cout << BLOCK_FULL;
     }
     resetTextColor();
+
+    cout << flush;
 }
 
 void SpaceShip::Draw() { // This is our spaceship
     // clearScreen();
-     // Row 0:   "  ▲  "
+    // Row 0:   "  ▲  "
+    setTextColor(YELLOW);
     move_cursor(x, y);
-    cout << "  " << TRIANGLE_UP << "  ";
+    cout << "  " << "A" << "  ";
 
     // Row 1:   " ◀ █ ▶ "
     move_cursor(x, y + 1);
-    cout  << " " << TRIANGLE_LEFT << BLOCK_FULL << TRIANGLE_RIGHT << " ";
+    cout  << TRIANGLE_LEFT << "[" << BLOCK_FULL << "]" << TRIANGLE_RIGHT;
 
     // Row 2:   "◀ ▴ ▷" (stylized base)
     move_cursor(x, y + 2);
-    cout << TRIANGLE_LEFT << " " << TRIANGLE_UP << " " << TRIANGLE_RIGHT;
+    cout << BLOCK_LEFT << " " << BLOCK_HALF << " " << BLOCK_RIGHT;
+
+     // Row 2:   " ▼  ▼ " (stylized base)
+    move_cursor(x, y + 2);
+    cout << " ^" << " " << "^  ";
+    resetTextColor();
 }
 
 void SpaceShip::Erase() { // This was or spaceship
@@ -90,12 +100,12 @@ void SpaceShip::Damage() { // The spaceship is damaged
     } else {
       Erase(); // You can omit this part, is meant to visually tell you that you were hit
       move_cursor(x, y);
-      printf("  *  ");
+      printf("  * ");
       move_cursor(x, y + 1);
-      printf("  *  ");
+      printf("  * ");
       move_cursor(x, y + 2);
       printf("*****");
-      usleep(10000);
+      this_thread::sleep_for(chrono::milliseconds(100));
     }
 }
 
@@ -103,12 +113,12 @@ void SpaceShip::Explosion() { // When you lose a heart :c
     hp--;
     Erase();
     move_cursor(x, y);
-    cout << ("  *  ");
+    cout << ("  * ");
     move_cursor(x, y + 1);
-    cout << ("  *  ");
+    cout << ("  * ");
     move_cursor(x, y + 2);
     cout << ("*****");
-    sleep(100);
+    this_thread::sleep_for(chrono::milliseconds(100));
     Erase();
     move_cursor(x, y);
     cout << (" * * ");
@@ -116,15 +126,15 @@ void SpaceShip::Explosion() { // When you lose a heart :c
     cout << ("* * *");
     move_cursor(x, y + 2);
     cout << (" * * ");
-    sleep(100);
+    this_thread::sleep_for(chrono::milliseconds(100));
     Erase();
     move_cursor(x, y);
-    cout << ("*   *");
+    cout << ("* *");
     move_cursor(x, y + 1);
     cout << (" * * ");
     move_cursor(x, y + 2);
     cout << ("* * *");
-    usleep(10000);
+    this_thread::sleep_for(chrono::milliseconds(100));
     if (hp > 0) { // If you still have a heart or more
       energy = 5;
     } else { // If you don't
@@ -132,28 +142,33 @@ void SpaceShip::Explosion() { // When you lose a heart :c
     }
 }
 
-void SpaceShip::Move() { // The main function of the spaceship
-    if (kbhit()) { // If you move the spaceship
-      Erase(); // Look I'm invisible
-      InputKey key = getInputKey();  // What did you type?
-      switch (key) { // Checks if the spaceship won't leave the game boundaries
-        case 'A': case 'a': case InputKey::LEFT: // Left arrow or 'A' key
-          if (x > 2) x -= 1;
-          break;
+void SpaceShip::Move(InputKey key) { // The main function of the spaceship
+  // If no key pressed, just redraw the ship (keeps animation / display stable)
+    if (key == InputKey::NONE) {
+        Draw();
+        return;
+    }
+
+    Erase(); // clear old
+
+    switch (key) {
+        case InputKey::LEFT:
+            if (x > 2) x -= 1;
+            break;
         case InputKey::RIGHT:
-          if (x + 4 < 77) x += 1;
-          break;
+            if (x + 4 < 77) x += 1;
+            break;
         case InputKey::UP:
-          if (y > 3) y -= 1;
-          break;
+            if (y > 3) y -= 1;
+            break;
         case InputKey::DOWN:
-          if (y + 2 < 22) y += 1;
-        break;
+            if (y + 2 < 22) y += 1;
+            break;
+        case InputKey::SPACE:
+            // do nothing here — shooting handled by Game (keeps separation of concerns)
+            break;
         default:
             break;
-      }
     }
-    // usleep(10000);
-    Draw(); // The spaceship is drawn regardless if you moved it or not, if you did then it will appear in it's new position.
+    Draw();
 }
-

@@ -53,15 +53,6 @@ void clearTerminal() {
 #endif
 }
 
-void setTextColor(int color) {
-#ifdef _WIN32
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hConsole, color);
-#else
-    cout << "\033[" << color << "m";
-#endif
-}
-
 void move_cursor(int x, int y) {
 #ifdef _WIN32
     COORD coord;
@@ -161,9 +152,6 @@ void sleep_ms(int ms) {
 #endif
 }
 
-int random_range(int min, int max) {
-    return rand() % (max - min + 1) + min;
-}
 
 // Box drawing characters
 const char SYMBOL_HORIZONTAL[]   = "\u2500"; // ─

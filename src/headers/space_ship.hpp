@@ -3,7 +3,6 @@
 #include <vector>
 #include <string>
 #include "cursor_input.hpp"
-
 #include "color.hpp"
 #include "utils.hpp"
 #include <iostream>
@@ -30,6 +29,6 @@ public:
     void Erase(); // Erases the spaceship from its current position
     void Damage(); // Reduces energy when hit by an asteroid
     void Explosion(); // Handles the explosion animation and logic when the ship is hit
-    void Move(); // The main function of the spaceship
+    void Move(InputKey key); // The main function of the spaceship
 
 };

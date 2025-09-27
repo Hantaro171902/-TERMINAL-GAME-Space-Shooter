@@ -52,6 +52,10 @@ extern const char SYMBOL_DOUBLE_INTERSECT[];
 extern const char BLOCK_FULL[];
 extern const char BLOCK_HALF[];
 extern const char BLOCK_RECT[];
+extern const char BLOCK_LEFT[];
+extern const char BLOCK_RIGHT[];
+extern const char BLOCK_DOWN[];
+extern const char BLOCK_UP[];
 
 extern const char* ARROW_UP;
 extern const char* ARROW_DOWN;

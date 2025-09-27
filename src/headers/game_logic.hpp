@@ -34,7 +34,7 @@ public:
     void SpecialMessage(); // A special message for your special needs
     void DrawFrame(int ax, int ay, int bx, int by); // Draws a window frame given two coordinates
     void DrawWhiteSpace(int ax, int ay, int bx, int by); // Draws white space in a
-    void run(); // The main function of the game
+    bool run(); // The main function of the game
 };
 
 

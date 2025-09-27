@@ -14,7 +14,7 @@
 
 using namespace std;
 
-void Game::run() { // The main function of the game
+bool Game::run() { // The main function of the game
 
     clearTerminal();
     hideCursor();
@@ -40,11 +40,10 @@ void Game::run() { // The main function of the game
     using namespace chrono_literals;
 
     while (!ss.isDead() && score != 100) {
-        if (kbhit()) {
-            char key = getch();
-            if (key == ' ') {
-                Bullets.push_back(new Bullet(ss.getX() + 2, ss.getY() - 1)); // use getX/getY if those are your accessors
-            }
+        InputKey input = getInputKey();
+
+        if (input == InputKey::SPACE) {
+            Bullets.push_back(new Bullet(ss.getX() + 2, ss.getY() - 1)); // use getX/getY if those are your accessors
         }
 
         // bullets update + erase
@@ -96,7 +95,9 @@ void Game::run() { // The main function of the game
             } // bullets loop
         } // asteroids loop
 
-        ss.Move();
+        // Pass the captured input to the Move function
+        ss.Move(input);
+        
         move_cursor(56, 1);
         cout << score;
 
@@ -104,9 +105,40 @@ void Game::run() { // The main function of the game
         this_thread::sleep_for(chrono::milliseconds(30));
     }
 
-    sleep(5000);
-    SpecialMessage(); // Surprise
-    sleep(5000);
+    // Short pause so final frame renders
+    this_thread::sleep_for(chrono::milliseconds(500));
+
+    // Show end message depending on why loop exited
+    if (ss.isDead()) {
+        // Simple defeat box
+        int a_x = 25, a_y = 8, b_x = 55, b_y = 16;
+        DrawFrame(a_x, a_y, b_x, b_y);
+        move_cursor(a_x + 4, a_y + 3);
+        cout << "     GAME OVER     ";
+        move_cursor(a_x + 2, a_y + 5);
+        cout << " You lost all hearts";
+        move_cursor(a_x + 2, a_y + 7);
+        cout << " Press R to replay, Q to quit ";
+        move_cursor(1, 24);
+        cout << flush;
+
+        // wait for 'r' or 'q'
+        while (true) {
+            InputKey k = getInputKey();
+            if (k == InputKey::R) {
+                return true;   // user wants to replay
+            }
+            if (k == InputKey::Q) {
+                return false;  // user wants to quit
+            }
+            this_thread::sleep_for(chrono::milliseconds(50)); // tiny sleep, avoid busy wait
+        }
+    } else if (score >= 100) {
+        GameOverVictoryMessage();
+    } else {
+        SpecialMessage();
+    }
+    return false;
 }
 
 Game::Game() : ship(40, 20), bullet(nullptr), asteroid(nullptr), score(0) {
